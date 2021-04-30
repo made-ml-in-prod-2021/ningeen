@@ -5,8 +5,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
-from rank_transformer import RankTransformer
-from src.entities import FeatureParams
+from entities import FeatureParams
+from features.rank_transformer import RankTransformer
 
 
 def process_categorical_features(categorical_df: pd.DataFrame) -> pd.DataFrame:
@@ -18,7 +18,7 @@ def process_categorical_features(categorical_df: pd.DataFrame) -> pd.DataFrame:
 def build_categorical_pipeline() -> Pipeline:
     categorical_pipeline = Pipeline(
         [
-            ("impute", SimpleImputer(missing_values=np.nan, strategy="most_common")),
+            ("impute", SimpleImputer(missing_values=np.nan, strategy="most_frequent")),
             ("ohe", OneHotEncoder()),
         ]
     )
@@ -40,8 +40,19 @@ def build_numerical_pipeline():
     return numerical_pipeline
 
 
-def make_features(transformer: Pipeline, df: pd.DataFrame) -> pd.DataFrame:
-    return pd.DataFrame(transformer.transform(df).toarray())
+def build_rank_pipeline(params: FeatureParams):
+    numerical_pipeline = Pipeline(
+        [
+            ("rank_pipeline", RankTransformer(params.method, params.ascending)),
+            ("impute", SimpleImputer(missing_values=np.nan, strategy="most_frequent")),
+        ]
+    )
+    return numerical_pipeline
+
+
+def make_features(transformer: ColumnTransformer, df: pd.DataFrame) -> pd.DataFrame:
+    df = transformer.transform(df)
+    return pd.DataFrame(df)
 
 
 def build_transformer(params: FeatureParams) -> ColumnTransformer:
@@ -49,28 +60,10 @@ def build_transformer(params: FeatureParams) -> ColumnTransformer:
         [
             ("categorical_pipeline", build_categorical_pipeline(), params.categorical_features),
             ("numerical_pipeline", build_numerical_pipeline(), params.numerical_features),
+            ("rank_pipeline", build_rank_pipeline(params), params.rank_features),
         ]
     )
     return transformer
-
-
-def build_rank_transformer(params: FeatureParams) -> ColumnTransformer:
-    transformer = ColumnTransformer(
-        [
-            ("rank_pipeline", RankTransformer(params.method, params.ascending), params.rank_features),
-        ]
-    )
-    return transformer
-
-
-def build_pipeline(params: FeatureParams) -> Pipeline:
-    pipeline = Pipeline(
-        [
-            ("columns_transformer", build_transformer(params)),
-            ("rank_transformer", build_rank_transformer(params)),
-        ]
-    )
-    return pipeline
 
 
 def extract_target(df: pd.DataFrame, params: FeatureParams) -> pd.Series:

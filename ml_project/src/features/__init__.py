@@ -1,7 +1,7 @@
-from .build_features import build_pipeline, extract_target, make_features
+from .build_features import build_transformer, extract_target, make_features
 
 __all__ = [
-    "build_pipeline",
+    "build_transformer",
     "extract_target",
-    "make_features"
+    "make_features",
 ]

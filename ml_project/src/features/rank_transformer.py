@@ -14,6 +14,7 @@ class RankTransformer(TransformerMixin, BaseEstimator):
         for col in X.columns:
             rank = X[col].rank(method=self.method, ascending=self.ascending)
             self.__mapping[col] = dict(zip(X[col], rank))
+        return self
 
     def transform(self, X):
         for col in X.columns:
