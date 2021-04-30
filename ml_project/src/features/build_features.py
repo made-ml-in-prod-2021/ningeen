@@ -40,7 +40,7 @@ def build_numerical_pipeline():
     return numerical_pipeline
 
 
-def make_features(transformer: ColumnTransformer, df: pd.DataFrame) -> pd.DataFrame:
+def make_features(transformer: Pipeline, df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(transformer.transform(df).toarray())
 
 
