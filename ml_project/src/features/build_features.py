@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from entities import FeatureParams
 from features.rank_transformer import RankTransformer
@@ -31,12 +31,20 @@ def process_numerical_features(numerical_df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(processed_df.toarray())
 
 
-def build_numerical_pipeline():
-    numerical_pipeline = Pipeline(
-        [
-            ("impute", SimpleImputer(missing_values=np.nan, strategy="mean")),
-        ]
-    )
+def build_numerical_pipeline(params: FeatureParams):
+    if params.normalize:
+        numerical_pipeline = Pipeline(
+            [
+                ("impute", SimpleImputer(missing_values=np.nan, strategy="mean")),
+                ("scaler", StandardScaler()),
+            ]
+        )
+    else:
+        numerical_pipeline = Pipeline(
+            [
+                ("impute", SimpleImputer(missing_values=np.nan, strategy="mean")),
+            ]
+        )
     return numerical_pipeline
 
 
@@ -59,7 +67,7 @@ def build_transformer(params: FeatureParams) -> ColumnTransformer:
     transformer = ColumnTransformer(
         [
             ("categorical_pipeline", build_categorical_pipeline(), params.categorical_features),
-            ("numerical_pipeline", build_numerical_pipeline(), params.numerical_features),
+            ("numerical_pipeline", build_numerical_pipeline(params), params.numerical_features),
             ("rank_pipeline", build_rank_pipeline(params), params.rank_features),
         ]
     )

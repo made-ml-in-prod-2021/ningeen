@@ -11,7 +11,6 @@ train_params:
     n_estimators: 50
 feature_params:
   categorical_features:
-    - "sex"
     - "cp"
     - "fbs"
     - "restecg"
@@ -25,4 +24,6 @@ feature_params:
     - "thalach"
     - "oldpeak"
     - "chol"
+  rank_features:
+    - "sex"
   target_col: "target"

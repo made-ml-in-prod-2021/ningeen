@@ -11,3 +11,4 @@ class FeatureParams:
     features_to_drop: List[str] = field(default_factory=list)
     method: Optional[str] = field(default="average")
     ascending: Optional[bool] = field(default=True)
+    normalize: Optional[bool] = field(default=False)
