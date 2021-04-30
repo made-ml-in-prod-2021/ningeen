@@ -1,0 +1,29 @@
+input_data_path: "data/raw/heart.csv"
+output_model_path: "models/1.1_model.pkl"
+metric_path: "models/1.1_metrics.json"
+splitting_params:
+  val_size: 0.25
+  random_state: 42
+train_params:
+  model_type: "LogisticRegression"
+  clf_params:
+    random_state: 42
+    C: 0.1
+    max_iter: 10000
+feature_params:
+  numerical_features:
+    - "sex"
+    - "cp"
+    - "exang"
+    - "slope"
+    - "thal"
+    - "ca"
+    - "fbs"
+    - "age"
+    - "trestbps"
+    - "thalach"
+    - "oldpeak"
+    - "chol"
+  rank_features:
+    - "restecg"
+  target_col: "target"
