@@ -9,7 +9,7 @@ Installation:
 ~~~
 Usage:
 ~~~
-*TODO*
+python src/train_pipeline.py configs/{config_name}.yaml 
 ~~~
 
 Test:
