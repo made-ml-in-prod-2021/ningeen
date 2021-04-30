@@ -6,7 +6,7 @@ import logging
 import logging.config
 
 from data import read_data, split_train_val_data
-from features import build_pipeline, extract_target, make_features
+from features import build_transformer, extract_target, make_features
 from models import (
     get_model,
     train_model,
@@ -34,7 +34,7 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"Train df shape: {train_df.shape}")
     logger.info(f"Val df shape: {val_df.shape}")
 
-    pipeline = build_pipeline(training_pipeline_params.feature_params)
+    pipeline = build_transformer(training_pipeline_params.feature_params)
     pipeline.fit(train_df)
     logger.info(f"Transform fitted.")
 
