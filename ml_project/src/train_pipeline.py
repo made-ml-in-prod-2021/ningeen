@@ -6,7 +6,7 @@ import logging
 import logging.config
 
 from data import read_data, split_train_val_data
-from features import build_transformer, extract_target, make_features
+from features import build_transformer, extract_target, make_features, save_transformer
 from models import (
     get_model,
     train_model,
@@ -63,6 +63,10 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"Metrics are {metrics}")
 
     path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
+    logger.info(f"Model saved in {path_to_model}")
+
+    path_to_transformer = save_transformer(pipeline, training_pipeline_params.transformer_path)
+    logger.info(f"Transformer saved in {path_to_transformer}")
 
     return path_to_model, metrics
 
