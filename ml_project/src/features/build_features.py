@@ -6,7 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from entities import FeatureParams
-from features.rank_transformer import RankTransformer
+from .rank_transformer import RankTransformer
 
 
 def process_categorical_features(categorical_df: pd.DataFrame) -> pd.DataFrame:

@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 from sklearn.base import TransformerMixin, BaseEstimator
 
 
@@ -13,7 +15,8 @@ class RankTransformer(TransformerMixin, BaseEstimator):
     def fit(self, X, y=None):
         for col in X.columns:
             rank = X[col].rank(method=self.method, ascending=self.ascending)
-            self.__mapping[col] = dict(zip(X[col], rank))
+            nan_mask = X[col].notna()
+            self.__mapping[col] = dict(zip(X.loc[nan_mask, col], rank.loc[nan_mask]))
         return self
 
     def transform(self, X):
