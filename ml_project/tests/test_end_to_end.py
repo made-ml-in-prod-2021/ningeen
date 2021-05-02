@@ -31,10 +31,12 @@ def test_train_e2e(
 ):
     expected_output_model_path = tmpdir.join("model.pkl")
     expected_metric_path = tmpdir.join("metrics.json")
+    expected_transformer_path = tmpdir.join("transformer.pkl")
     params = TrainingPipelineParams(
         input_data_path=fake_dataset,
         output_model_path=expected_output_model_path,
         metric_path=expected_metric_path,
+        transformer_path=expected_transformer_path,
         splitting_params=SplittingParams(val_size=0.2, random_state=239),
         feature_params=FeatureParams(
             numerical_features=numerical_features,
