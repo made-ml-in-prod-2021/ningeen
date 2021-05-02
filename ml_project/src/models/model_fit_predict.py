@@ -3,11 +3,10 @@ from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
+from entities import TrainingParams
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, accuracy_score
-
-from entities import TrainingParams
 
 SklearnClassifierModel = Union[RandomForestClassifier, LogisticRegression]
 
@@ -23,7 +22,7 @@ def get_model(params: TrainingParams) -> SklearnClassifierModel:
 
 
 def train_model(
-        features: pd.DataFrame, target: pd.Series, model: SklearnClassifierModel
+    features: pd.DataFrame, target: pd.Series, model: SklearnClassifierModel
 ) -> SklearnClassifierModel:
     model.fit(features, target)
     return model

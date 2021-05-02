@@ -1,11 +1,12 @@
-import sys
 import json
-
-import click
 import logging
 import logging.config
+import sys
+
+import click
 
 from data import read_data, split_train_val_data
+from entities import TrainingPipelineParams, read_training_pipeline_params
 from features import build_transformer, extract_target, make_features, save_transformer
 from models import (
     get_model,
@@ -14,7 +15,6 @@ from models import (
     predict_model,
     evaluate_model,
 )
-from entities import TrainingPipelineParams, read_training_pipeline_params
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -39,15 +39,11 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"Transform fitted.")
 
     train_features = make_features(pipeline, train_df)
-    train_target = extract_target(
-        train_df, training_pipeline_params.feature_params
-    )
+    train_target = extract_target(train_df, training_pipeline_params.feature_params)
     logger.info(f"Train features shape: {train_features.shape}")
 
     val_features = make_features(pipeline, val_df)
-    val_target = extract_target(
-        val_df, training_pipeline_params.feature_params
-    )
+    val_target = extract_target(val_df, training_pipeline_params.feature_params)
     logger.info(f"Val features shape: {train_features.shape}")
 
     model = get_model(training_pipeline_params.train_params)
@@ -65,7 +61,9 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
     logger.info(f"Model saved in {path_to_model}")
 
-    path_to_transformer = save_transformer(pipeline, training_pipeline_params.transformer_path)
+    path_to_transformer = save_transformer(
+        pipeline, training_pipeline_params.transformer_path
+    )
     logger.info(f"Transformer saved in {path_to_transformer}")
 
     return path_to_model, metrics

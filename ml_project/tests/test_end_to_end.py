@@ -16,9 +16,9 @@ from src.entities import (
 @pytest.mark.parametrize(
     "model_type",
     [
-        pytest.param("RandomForestClassifier", id='RandomForestClassifier'),
-        pytest.param("LogisticRegression", id='LogisticRegression'),
-    ]
+        pytest.param("RandomForestClassifier", id="RandomForestClassifier"),
+        pytest.param("LogisticRegression", id="LogisticRegression"),
+    ],
 )
 def test_train_e2e(
     tmpdir: LocalPath,
@@ -27,7 +27,7 @@ def test_train_e2e(
     numerical_features: List[str],
     target_col: str,
     features_to_drop: List[str],
-    model_type: str
+    model_type: str,
 ):
     expected_output_model_path = tmpdir.join("model.pkl")
     expected_metric_path = tmpdir.join("metrics.json")

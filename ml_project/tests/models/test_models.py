@@ -9,7 +9,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 from src.data.make_dataset import read_data
-from src.entities import TrainingParams
 from src.entities.feature_params import FeatureParams
 from src.features.build_features import make_features, extract_target, build_transformer
 from src.models.model_fit_predict import train_model, serialize_model
@@ -19,8 +18,11 @@ SklearnClassifierModel = Union[RandomForestClassifier, LogisticRegression]
 
 @pytest.fixture()
 def features_and_target(
-    fake_dataset: str, target_col: str, categorical_features: List[str],
-    numerical_features: List[str], features_to_drop: List[str]
+    fake_dataset: str,
+    target_col: str,
+    categorical_features: List[str],
+    numerical_features: List[str],
+    features_to_drop: List[str],
 ) -> Tuple[pd.DataFrame, pd.Series]:
     params = FeatureParams(
         categorical_features=categorical_features,
@@ -39,11 +41,13 @@ def features_and_target(
 @pytest.mark.parametrize(
     "clf",
     [
-        pytest.param(RandomForestClassifier, id='RandomForestClassifier'),
-        pytest.param(LogisticRegression, id='LogisticRegression'),
-    ]
+        pytest.param(RandomForestClassifier, id="RandomForestClassifier"),
+        pytest.param(LogisticRegression, id="LogisticRegression"),
+    ],
 )
-def test_train_model(clf: SklearnClassifierModel, features_and_target: Tuple[pd.DataFrame, pd.Series]):
+def test_train_model(
+    clf: SklearnClassifierModel, features_and_target: Tuple[pd.DataFrame, pd.Series]
+):
     features, target = features_and_target
     model = train_model(features, target, clf())
     assert isinstance(model, clf)
@@ -53,9 +57,9 @@ def test_train_model(clf: SklearnClassifierModel, features_and_target: Tuple[pd.
 @pytest.mark.parametrize(
     "clf",
     [
-        pytest.param(RandomForestClassifier, id='RandomForestClassifier'),
-        pytest.param(LogisticRegression, id='LogisticRegression'),
-    ]
+        pytest.param(RandomForestClassifier, id="RandomForestClassifier"),
+        pytest.param(LogisticRegression, id="LogisticRegression"),
+    ],
 )
 def test_serialize_model(tmpdir: LocalPath, clf: SklearnClassifierModel):
     expected_output = tmpdir.join("model.pkl")

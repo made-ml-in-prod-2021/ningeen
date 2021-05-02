@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from src.data.make_dataset import read_data
@@ -8,11 +7,11 @@ from src.features import RankTransformer
 @pytest.mark.parametrize(
     "method, ascending",
     [
-        pytest.param('average', True, id='average_true'),
-        pytest.param('average', False, id='average_false'),
-        pytest.param('min', True, id='min'),
-        pytest.param('first', True, id='first'),
-    ]
+        pytest.param("average", True, id="average_true"),
+        pytest.param("average", False, id="average_false"),
+        pytest.param("min", True, id="min"),
+        pytest.param("first", True, id="first"),
+    ],
 )
 def test_rank_init(method, ascending):
     transformer = RankTransformer(method, ascending)
@@ -23,11 +22,11 @@ def test_rank_init(method, ascending):
 @pytest.mark.parametrize(
     "method, ascending",
     [
-        pytest.param('average', True, id='average_true'),
-        pytest.param('average', False, id='average_false'),
-        pytest.param('min', True, id='min'),
-        pytest.param('first', True, id='first'),
-    ]
+        pytest.param("average", True, id="average_true"),
+        pytest.param("average", False, id="average_false"),
+        pytest.param("min", True, id="min"),
+        pytest.param("first", True, id="first"),
+    ],
 )
 def test_rank_fit_and_transform(fake_dataset, target_col, method, ascending):
     data = read_data(fake_dataset)

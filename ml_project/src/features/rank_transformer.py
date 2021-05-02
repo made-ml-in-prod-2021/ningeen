@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from sklearn.base import TransformerMixin, BaseEstimator
 
 
@@ -7,7 +5,8 @@ class RankTransformer(TransformerMixin, BaseEstimator):
     """
     Transforms columns to rank representation
     """
-    def __init__(self, method='average', ascending=True):
+
+    def __init__(self, method="average", ascending=True):
         self.method = method
         self.ascending = ascending
         self.__mapping = {}
