@@ -10,12 +10,6 @@ from entities import FeatureParams
 from .rank_transformer import RankTransformer
 
 
-def process_categorical_features(categorical_df: pd.DataFrame) -> pd.DataFrame:
-    categorical_pipeline = build_categorical_pipeline()
-    processed_df = categorical_pipeline.fit_transform(categorical_df)
-    return pd.DataFrame(processed_df.toarray())
-
-
 def build_categorical_pipeline() -> Pipeline:
     categorical_pipeline = Pipeline(
         [
@@ -24,12 +18,6 @@ def build_categorical_pipeline() -> Pipeline:
         ]
     )
     return categorical_pipeline
-
-
-def process_numerical_features(numerical_df: pd.DataFrame) -> pd.DataFrame:
-    numerical_pipeline = build_numerical_pipeline()
-    processed_df = numerical_pipeline.fit_transform(numerical_df)
-    return pd.DataFrame(processed_df.toarray())
 
 
 def build_numerical_pipeline(params: FeatureParams):
