@@ -20,7 +20,7 @@ PYTHONPATH=./src/ python -m pytest tests/
 Project Organization
 ------------
 
-    ├── README.md                   <- The top-level README for developers using this project.
+    ├── configs                     <- Configs for training
     │
     ├── data
     │   └── raw                     <- The original, immutable data dump.
@@ -32,9 +32,6 @@ Project Organization
     │                                   `1.0-jqp-initial-data-exploration`.
     │
     ├── reports                     <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │
-    ├── requirements.txt            <- The requirements file for reproducing the analysis environment, e.g.
-    │                                   generated with `pip freeze > requirements.txt`
     │
     ├── src                         <- Source code for use in this project.
     │   ├── data                    <- code to download or generate data
@@ -48,6 +45,11 @@ Project Organization
     │   ├── train_pipeline.py       <- code to train model and save artifacts
     │   │
     │   ├── predict_pipeline.py     <- code to predict from artifacts
+    │
+    ├── requirements.txt            <- The requirements file for reproducing the analysis environment, e.g.
+    │                                   generated with `pip freeze > requirements.txt`
+    │
+    ├── README.md                   <- The top-level README for developers using this project.
 
 --------
 
