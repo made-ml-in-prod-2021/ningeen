@@ -6,6 +6,11 @@ from .pipeline_params import (
     TrainingPipelineParamsSchema,
     TrainingPipelineParams,
 )
+from .pred_params import (
+    read_prediction_pipeline_params,
+    PredictionPipelineParamsSchema,
+    PredictionPipelineParams,
+)
 
 __all__ = [
     "SplittingParams",
@@ -14,4 +19,7 @@ __all__ = [
     "TrainingPipelineParams",
     "TrainingPipelineParamsSchema",
     "read_training_pipeline_params",
+    "PredictionPipelineParams",
+    "PredictionPipelineParamsSchema",
+    "read_prediction_pipeline_params",
 ]
