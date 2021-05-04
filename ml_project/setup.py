@@ -17,6 +17,9 @@ setup(
         "dataclasses == 0.6",
         "PyYAML == 5.3.1",
         "scikit_learn == 0.23.2",
+        "omegaconf==2.0.6",
+        "hydra_core==1.0.6",
+        "hydra==2.5",
     ],
     license='MIT',
 )
