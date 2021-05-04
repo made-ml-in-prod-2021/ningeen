@@ -5,11 +5,11 @@ First homework for "ML in Production"
 
 Train model:
 ~~~
-python src/train_pipeline.py configs/{config_name}.yaml 
+python src/train_pipeline.py
 ~~~
 Predict from artifacts:
 ~~~
-python src/predict_pipeline.py data_path transformer_path model_path output_path
+python src/predict_pipeline.py
 ~~~
 
 Test:
@@ -20,7 +20,7 @@ PYTHONPATH=./src/ python -m pytest tests/
 Project Organization
 ------------
 
-    ├── configs                     <- Configs for training
+    ├── configs                     <- Configs for training and prediction
     │
     ├── data
     │   └── raw                     <- The original, immutable data dump.
