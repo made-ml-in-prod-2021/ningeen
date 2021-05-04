@@ -1,0 +1,17 @@
+# @package _group_
+numerical_features:
+  - "sex"
+  - "cp"
+  - "exang"
+  - "slope"
+  - "thal"
+  - "ca"
+  - "fbs"
+  - "age"
+  - "trestbps"
+  - "thalach"
+  - "oldpeak"
+  - "chol"
+  - "restecg"
+target_col: "target"
+normalize: True

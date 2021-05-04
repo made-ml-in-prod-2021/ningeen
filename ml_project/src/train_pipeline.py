@@ -1,11 +1,11 @@
 import json
-import logging
 import logging.config
-import sys
 
-import click
+import hydra
+from omegaconf import DictConfig, OmegaConf
 
 from data import read_data, split_train_val_data
+from utils import save_config
 from entities import TrainingPipelineParams, read_training_pipeline_params
 from features import build_transformer, extract_target, make_features, save_transformer
 from models import (
@@ -17,9 +17,6 @@ from models import (
 )
 
 logger = logging.getLogger(__name__)
-handler = logging.StreamHandler(sys.stdout)
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)
 
 
 def train_pipeline(training_pipeline_params: TrainingPipelineParams):
@@ -54,25 +51,33 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     metrics = evaluate_model(predictions, val_target)
 
-    with open(training_pipeline_params.metric_path, "w") as metric_file:
-        json.dump(metrics, metric_file)
-    logger.info(f"Metrics are {metrics}")
-
-    path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
-    logger.info(f"Model saved in {path_to_model}")
-
-    path_to_transformer = save_transformer(
-        pipeline, training_pipeline_params.transformer_path
-    )
-    logger.info(f"Transformer saved in {path_to_transformer}")
+    path_to_model = save_artifacts(metrics, model, pipeline, training_pipeline_params)
 
     return path_to_model, metrics
 
 
-@click.command(name="train_pipeline")
-@click.argument("config_path")
-def train_pipeline_command(config_path: str):
-    params = read_training_pipeline_params(config_path)
+def save_artifacts(metrics, model, pipeline, training_pipeline_params):
+    with open(training_pipeline_params.metric_path, "w") as metric_file:
+        json.dump(metrics, metric_file)
+    logger.info(f"Metrics are {metrics}")
+    path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
+    logger.info(f"Model saved in {path_to_model}")
+    path_to_transformer = save_transformer(
+        pipeline, training_pipeline_params.transformer_path
+    )
+    logger.info(f"Transformer saved in {path_to_transformer}")
+    return path_to_model
+
+
+
+@hydra.main(config_path="../configs/", config_name="config_train.yaml")
+def train_pipeline_command(cfg: DictConfig) -> None:
+    cfg_yaml = OmegaConf.to_yaml(cfg)
+    save_config(cfg_yaml)
+    logger.info(f"Config params:")
+    logger.info(cfg_yaml)
+
+    params = read_training_pipeline_params(cfg)
     train_pipeline(params)
 
 

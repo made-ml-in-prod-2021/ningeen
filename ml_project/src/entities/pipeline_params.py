@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from .split_params import SplittingParams
 from .feature_params import FeatureParams
 from .train_params import TrainingParams
 from marshmallow_dataclass import class_schema
-import yaml
+from omegaconf import DictConfig
 
 
 @dataclass()
@@ -15,12 +15,13 @@ class TrainingPipelineParams:
     splitting_params: SplittingParams
     feature_params: FeatureParams
     train_params: TrainingParams
+    version: str = field(default="0.0")
 
 
 TrainingPipelineParamsSchema = class_schema(TrainingPipelineParams)
 
 
-def read_training_pipeline_params(path: str) -> TrainingPipelineParams:
-    with open(path, "r") as input_stream:
-        schema = TrainingPipelineParamsSchema()
-        return schema.load(yaml.safe_load(input_stream))
+def read_training_pipeline_params(cfg: DictConfig) -> TrainingPipelineParams:
+    schema = TrainingPipelineParamsSchema()
+    params = schema.load(cfg)
+    return params
