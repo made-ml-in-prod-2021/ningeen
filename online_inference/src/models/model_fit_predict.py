@@ -3,7 +3,7 @@ from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
-from entities import TrainingParams
+from src.entities import TrainingParams
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, accuracy_score

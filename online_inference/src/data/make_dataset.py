@@ -1,7 +1,7 @@
 from typing import Tuple
 
 import pandas as pd
-from entities import SplittingParams
+from src.entities import SplittingParams
 from sklearn.model_selection import train_test_split
 
 

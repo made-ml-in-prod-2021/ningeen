@@ -1,8 +1,2 @@
-data_path: "../../data/raw/heart.csv"
-artifacts_dir: "train_1.0_2021-05-04_17-34-45"
-transformer_path: "../${artifacts_dir}/transformer.pkl"
-model_path: "../${artifacts_dir}/model.pkl"
-output_path: "prediction.csv"
-hydra:
-  run:
-    dir: ./outputs/${artifacts_dir}_pred
+transformer_path: "./models/transformer.pkl"
+model_path: "./models/model.pkl"
