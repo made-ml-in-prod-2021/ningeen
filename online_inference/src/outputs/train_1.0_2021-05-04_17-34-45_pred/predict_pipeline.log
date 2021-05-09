@@ -1,0 +1,8 @@
+[2021-05-09 21:32:36,014][__main__][INFO] - Config params:
+[2021-05-09 21:32:36,014][__main__][INFO] - data_path: ../../data/raw/heart.csv
+artifacts_dir: train_1.0_2021-05-04_17-34-45
+transformer_path: ../${artifacts_dir}/transformer.pkl
+model_path: ../${artifacts_dir}/model.pkl
+output_path: prediction.csv
+
+[2021-05-09 21:32:36,016][__main__][INFO] - Start prediction.
