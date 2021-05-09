@@ -3,13 +3,20 @@ Homework #1
 
 First homework for "ML in Production"
 
+Create environment:
+~~~
+conda create -n {environment_name} python=3.8
+conda activate {environment_name}
+pip install -e .
+~~~
+
 Train model:
 ~~~
 python src/train_pipeline.py
 ~~~
 Predict from artifacts:
 ~~~
-python src/predict_pipeline.py
+python src/predict_pipeline.py artifacts_dir={outputs_folder}
 ~~~
 
 Test:
