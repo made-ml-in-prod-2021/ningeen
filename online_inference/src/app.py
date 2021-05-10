@@ -6,7 +6,7 @@ from typing import List
 import uvicorn
 from fastapi import FastAPI
 
-from src.api import Predictor, InputStruct, OutputStruct, make_prediction
+from src.api import Predictor, InputStruct, OutputStruct, make_prediction, Validator
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -37,6 +37,7 @@ def load_predictor():
 
 @app.get("/predict/", response_model=List[OutputStruct])
 def predict(request: InputStruct):
+    Validator(request).validate_input()
     response = make_prediction(request.data, request.features, predictor)
     return response
 
