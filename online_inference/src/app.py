@@ -6,7 +6,7 @@ from typing import List
 import uvicorn
 from fastapi import FastAPI
 
-from api import Predictor, InputStruct, OutputStruct, make_prediction
+from src.api import Predictor, InputStruct, OutputStruct, make_prediction
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)

@@ -1,12 +1,11 @@
 import logging
 import sys
 
-import numpy as np
 import requests
 
-from data import generate_dataset
+from src.data import generate_dataset
 
-SIZE = 100
+SIZE = 20
 NAN_PROBA = 0.05
 
 logger = logging.getLogger(__name__)
@@ -19,9 +18,7 @@ def main():
     data = generate_dataset(SIZE, NAN_PROBA)
     request_features = list(data.columns)
     for i in range(SIZE):
-        request_data = [
-            x.item() if isinstance(x, np.generic) else x for x in data.iloc[i].tolist()
-        ]
+        request_data = data.iloc[i].tolist()
         logger.debug(f"Input data: {request_data}")
         response = requests.get(
             "http://0.0.0.0:8000/predict/",
