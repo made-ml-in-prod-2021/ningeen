@@ -4,7 +4,9 @@ import pandas as pd
 from faker import Faker
 
 
-def generate_dataset(size, nan_probability):
+def generate_dataset(
+    size: int, nan_probability: float, with_target: bool = True
+) -> pd.DataFrame:
     faker = Faker()
     dataset = pd.DataFrame(
         {
@@ -62,5 +64,6 @@ def generate_dataset(size, nan_probability):
             ],
         }
     )
-    dataset["target"] = (dataset["age"] > 50).astype(int)
+    if with_target:
+        dataset["target"] = (dataset["age"] > 50).astype(int)
     return dataset
