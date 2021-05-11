@@ -22,6 +22,12 @@ Tests:
 ~~~
 PYTHONPATH=. pytest tests
 ~~~
+
+Requests to server
+~~~
+PYTHONPATH=. python src/make_response.py
+~~~
+
 ---
 Оптимизация размера docker image (455Mb):
 1. Использование slim-образа (alpine не вышло запустить)
