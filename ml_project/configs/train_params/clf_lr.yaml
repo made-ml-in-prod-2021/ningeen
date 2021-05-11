@@ -1,6 +1,0 @@
-# @package _group_
-model_type: "LogisticRegression"
-clf_params:
-  random_state: 42
-  C: 0.1
-  max_iter: 10000
