@@ -1,63 +1,55 @@
-Homework #1
+Homework #2
 ==============================
 
-First homework for "ML in Production"
+Second homework for "ML in Production"
 
-Create environment:
+Docker build...
 ~~~
-conda create -n {environment_name} python=3.8
-conda activate {environment_name}
-pip install -e .
+docker build -t ningeen/online_inference:v1 .
 ~~~
 
-Train model:
+...or pull from DockerHub:
 ~~~
-python src/train_pipeline.py
-~~~
-Predict from artifacts:
-~~~
-python src/predict_pipeline.py artifacts_dir={outputs_folder}
+docker pull ningeen/online_inference:v1
 ~~~
 
-Test:
+Docker run:
 ~~~
-PYTHONPATH=./src/ python -m pytest tests/ 
+docker run -p 8000:8000 ningeen/online_inference:v1
 ~~~
 
-Project Organization
-------------
+Tests:
+~~~
+PYTHONPATH=. pytest tests
+~~~
+---
+Оптимизация размера docker image:
+1. Использование slim-образа (alpine не вышло запустить)
+1. Чистка cache
+1. Использование .dockerignore
+---
+Task:
 
-    ├── configs                     <- Configs for training and prediction
-    │
-    ├── data
-    │   └── raw                     <- The original, immutable data dump.
-    │
-    ├── models                      <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks                   <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                                   the creator's initials, and a short `-` delimited description, e.g.
-    │                                   `1.0-jqp-initial-data-exploration`.
-    │
-    ├── reports                     <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │
-    ├── src                         <- Source code for use in this project.
-    │   ├── data                    <- code to download or generate data
-    │   │
-    │   ├── entities                <- params classes
-    │   │
-    │   ├── features                <- code to turn raw data into features for modeling
-    │   │
-    │   ├── models                  <- code to train models and then use trained models to make
-    │   │
-    │   ├── train_pipeline.py       <- code to train model and save artifacts
-    │   │
-    │   ├── predict_pipeline.py     <- code to predict from artifacts
-    │
-    ├── requirements.txt            <- The requirements file for reproducing the analysis environment, e.g.
-    │                                   generated with `pip freeze > requirements.txt`
-    │
-    ├── README.md                   <- The top-level README for developers using this project.
+- [X] ветку назовите homework2, положите код в папку online_inference
 
---------
+- [X] Оберните inference вашей модели в rest сервис(вы можете использовать как FastAPI, так и flask, другие желательно не использовать, дабы не плодить излишнего разнообразия для проверяющих), должен быть endpoint /predict (3 балла)
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+- [X] Напишите тест для /predict  (3 балла) (https://fastapi.tiangolo.com/tutorial/testing/, https://flask.palletsprojects.com/en/1.1.x/testing/)
+
+- [X] Напишите скрипт, который будет делать запросы к вашему сервису -- 2 балла
+
+- [X] Сделайте валидацию входных данных (например, порядок колонок не совпадает с трейном, типы не те и пр, в рамках вашей фантазии)  (вы можете сохранить вместе с моделью доп информацию, о структуре входных данных, если это нужно) -- 3 доп балла
+https://fastapi.tiangolo.com/tutorial/handling-errors/ -- возращайте 400, в случае, если валидация не пройдена
+
+- [X] Напишите dockerfile, соберите на его основе образ и запустите локально контейнер(docker build, docker run), внутри контейнера должен запускать сервис, написанный в предущем пункте, закоммитьте его, напишите в readme корректную команду сборки (4 балл)
+
+- [X] Оптимизируйте размер docker image (3 доп балла) (опишите в readme.md что вы предприняли для сокращения размера и каких результатов удалось добиться)  -- https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+
+- [X] опубликуйте образ в https://hub.docker.com/, используя docker push (вам потребуется зарегистрироваться) (2 балла)
+
+- [X] напишите в readme корректные команды docker pull/run, которые должны привести к тому, что локально поднимется на inference ваша модель (1 балл)
+Убедитесь, что вы можете протыкать его скриптом из пункта 3
+
+- [X] проведите самооценку -- 1 доп балл
+
+Summary: 22 балла
