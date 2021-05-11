@@ -23,9 +23,9 @@ Tests:
 PYTHONPATH=. pytest tests
 ~~~
 ---
-Оптимизация размера docker image:
+Оптимизация размера docker image (455Mb):
 1. Использование slim-образа (alpine не вышло запустить)
-1. Чистка cache
+1. Чистка cache при pip install
 1. Использование .dockerignore
 ---
 Task:
@@ -52,4 +52,4 @@ https://fastapi.tiangolo.com/tutorial/handling-errors/ -- возращайте 4
 
 - [X] проведите самооценку -- 1 доп балл
 
-Summary: 22 балла
+**Summary: 22 балла**
