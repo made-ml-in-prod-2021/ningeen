@@ -26,6 +26,7 @@ class Validator:
     def __init__(self, request: InputStruct) -> None:
         self.request = request
         self.rdata, self.rfeatures = request.data[0], request.features
+        self.values = dict(zip(self.rfeatures, self.rdata))
 
     def validate_input(self) -> None:
         self.validate_columns()
@@ -39,14 +40,13 @@ class Validator:
             )
 
     def validate_values(self) -> None:
-        values = dict(zip(self.rfeatures, self.rdata))
-        if values["age"] <= 0 or values["age"] >= 100:
+        if self.values["age"] <= 0 or self.values["age"] >= 100:
             raise HTTPException(
                 status_code=INCORRECT_VALIDATION_STATUS_CODE,
-                detail=f"Incorrect age: {values['age']}",
+                detail=f"Incorrect age: {self.values['age']}",
             )
-        if values["sex"] < 0 or values["sex"] > 1:
+        if self.values["sex"] < 0 or self.values["sex"] > 1:
             raise HTTPException(
                 status_code=INCORRECT_VALIDATION_STATUS_CODE,
-                detail=f"Incorrect sex: {values['sex']}",
+                detail=f"Incorrect sex: {self.values['sex']}",
             )
