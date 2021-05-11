@@ -47,7 +47,7 @@ def generate_dataset(
                 for _ in range(size)
             ],
             "oldpeak": [
-                faker.pyfloat(0, 7) if random.random() > nan_probability else None
+                faker.pyfloat(min_value=0, max_value=7) if random.random() > nan_probability else None
                 for _ in range(size)
             ],
             "slope": [
