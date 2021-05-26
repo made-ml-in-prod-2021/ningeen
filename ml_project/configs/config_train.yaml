@@ -9,5 +9,6 @@ defaults:
   - train_params: clf_rf
   - feature_params: 1.0_fp
 hydra:
+  verbose: True
   run:
     dir: ./outputs/train_${version}

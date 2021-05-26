@@ -70,7 +70,6 @@ def save_artifacts(metrics, model, pipeline, training_pipeline_params):
     return path_to_model
 
 
-
 @hydra.main(config_path="../configs/", config_name="config_train.yaml")
 def train_pipeline_command(cfg: DictConfig) -> None:
     cfg_yaml = OmegaConf.to_yaml(cfg)
