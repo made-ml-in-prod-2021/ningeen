@@ -9,6 +9,7 @@ from omegaconf import DictConfig
 @dataclass()
 class TrainingPipelineParams:
     input_data_path: str
+    input_data_url: str
     output_model_path: str
     metric_path: str
     transformer_path: str

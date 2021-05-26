@@ -4,7 +4,7 @@ import logging.config
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from data import read_data, split_train_val_data
+from data import read_data, split_train_val_data, load_data
 from utils import save_config
 from entities import TrainingPipelineParams, read_training_pipeline_params
 from features import build_transformer, extract_target, make_features, save_transformer
@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"Start training with params: {training_pipeline_params}")
 
+    load_data(training_pipeline_params.input_data_path, training_pipeline_params.input_data_url)
     data = read_data(training_pipeline_params.input_data_path)
     logger.info(f"Raw data shape: {data.shape}")
 

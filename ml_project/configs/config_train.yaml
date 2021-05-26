@@ -1,5 +1,6 @@
 version: "1.0"
 input_data_path: "../../data/raw/heart.csv"
+input_data_url: "https://raw.githubusercontent.com/made-ml-in-prod-2021/sergey-msu/main/ml_project/data/raw/heart.csv"
 output_model_path: "model.pkl"
 metric_path: "metrics.json"
 transformer_path: "transformer.pkl"
