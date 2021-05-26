@@ -43,26 +43,23 @@ def load_test(test_path=TEST_CONFIG_PATH):
         return schema.load(config_test)
 
 
-config_test = load_test()
+@pytest.fixture(scope="session")
+def config_test():
+    return load_test()
 
 
 @pytest.fixture(scope="session")
-def config_test_fixture():
-    return config_test
-
-
-@pytest.fixture(scope="session")
-def dataset_size():
+def dataset_size(config_test):
     return config_test.dataset_size
 
 
 @pytest.fixture(scope="session")
-def target_col():
+def target_col(config_test):
     return config_test.target_col
 
 
-@pytest.fixture
-def categorical_features() -> List[str]:
+@pytest.fixture(scope="function")
+def categorical_features(config_test) -> List[str]:
     return np.random.choice(
         config_test.possible_cat_feat,
         size=config_test.categorical_features_size,
@@ -70,8 +67,8 @@ def categorical_features() -> List[str]:
     ).tolist()
 
 
-@pytest.fixture
-def numerical_features() -> List[str]:
+@pytest.fixture(scope="function")
+def numerical_features(config_test) -> List[str]:
     return np.random.choice(
         config_test.column_names,
         size=config_test.numerical_features_size,
@@ -79,8 +76,8 @@ def numerical_features() -> List[str]:
     ).tolist()
 
 
-@pytest.fixture
-def features_to_drop() -> List[str]:
+@pytest.fixture(scope="function")
+def features_to_drop(config_test) -> List[str]:
     return np.random.choice(
         config_test.column_names,
         size=config_test.features_to_drop_size,
@@ -88,8 +85,9 @@ def features_to_drop() -> List[str]:
     ).tolist()
 
 
+# нельзя сделать scope=session из-за tmpdir
 @pytest.fixture(scope="function")
-def fake_dataset(tmpdir):
+def fake_dataset(tmpdir, config_test):
     dataset_path = os.path.join(tmpdir, config_test.test_fname)
     faker = Faker()
 
@@ -105,7 +103,7 @@ def fake_dataset(tmpdir):
 
     dataset = pd.DataFrame(dataset)
     dataset["target"] = (
-        dataset[config_test.threshold_col] > config_test.target_threshold
+            dataset[config_test.threshold_col] > config_test.target_threshold
     ).astype(int)
     dataset.to_csv(dataset_path, index=False)
     return dataset_path

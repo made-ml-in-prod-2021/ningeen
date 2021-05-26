@@ -43,9 +43,9 @@ def features_and_target(
 
 
 def test_train_model(
-    config_test_fixture, features_and_target: Tuple[pd.DataFrame, pd.Series]
+        config_test, features_and_target: Tuple[pd.DataFrame, pd.Series]
 ):
-    for clf in config_test_fixture.model_types:
+    for clf in config_test.model_types:
         clf = create_object_by_type(clf)
         features, target = features_and_target
         model = train_model(features, target, clf())
@@ -53,8 +53,8 @@ def test_train_model(
         assert model.predict(features).shape[0] == target.shape[0]
 
 
-def test_serialize_model(tmpdir: LocalPath, config_test_fixture):
-    for clf in config_test_fixture.model_types:
+def test_serialize_model(tmpdir: LocalPath, config_test):
+    for clf in config_test.model_types:
         clf = create_object_by_type(clf)
         expected_output = tmpdir.join("model.pkl")
         model = clf()

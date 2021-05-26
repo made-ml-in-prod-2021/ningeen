@@ -11,10 +11,10 @@ from src.features.build_features import make_features, extract_target, build_tra
 def test_make_features(
     fake_dataset: str,
     target_col: str,
-    config_test_fixture,
+        config_test,
 ):
     def generate_cols_params():
-        column_names = config_test_fixture.column_names.copy()
+        column_names = config_test.column_names.copy()
         random.shuffle(column_names)
         indices = [random.randint(0, len(column_names)) for _ in range(3)]
         indices.sort()
