@@ -1,7 +1,4 @@
-from dataclasses import dataclass, field
-from .split_params import SplittingParams
-from .feature_params import FeatureParams
-from .train_params import TrainingParams
+from dataclasses import dataclass
 from marshmallow_dataclass import class_schema
 from omegaconf import DictConfig
 
