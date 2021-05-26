@@ -1,5 +1,5 @@
 data_path: "../../data/raw/heart.csv"
-artifacts_dir: "train_1.0_2021-05-04_17-34-45"
+artifacts_dir: "train_1.0"
 transformer_path: "../${artifacts_dir}/transformer.pkl"
 model_path: "../${artifacts_dir}/model.pkl"
 output_path: "prediction.csv"
