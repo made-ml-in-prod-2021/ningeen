@@ -16,6 +16,10 @@ from src.models.model_fit_predict import train_model, serialize_model
 SklearnClassifierModel = Union[RandomForestClassifier, LogisticRegression]
 
 
+def create_object_by_type(obj_type):
+    return globals()[obj_type]
+
+
 @pytest.fixture()
 def features_and_target(
     fake_dataset: str,
@@ -38,35 +42,25 @@ def features_and_target(
     return features, target
 
 
-@pytest.mark.parametrize(
-    "clf",
-    [
-        pytest.param(RandomForestClassifier, id="RandomForestClassifier"),
-        pytest.param(LogisticRegression, id="LogisticRegression"),
-    ],
-)
 def test_train_model(
-    clf: SklearnClassifierModel, features_and_target: Tuple[pd.DataFrame, pd.Series]
+    config_test_fixture, features_and_target: Tuple[pd.DataFrame, pd.Series]
 ):
-    features, target = features_and_target
-    model = train_model(features, target, clf())
-    assert isinstance(model, clf)
-    assert model.predict(features).shape[0] == target.shape[0]
+    for clf in config_test_fixture.model_types:
+        clf = create_object_by_type(clf)
+        features, target = features_and_target
+        model = train_model(features, target, clf())
+        assert isinstance(model, clf)
+        assert model.predict(features).shape[0] == target.shape[0]
 
 
-@pytest.mark.parametrize(
-    "clf",
-    [
-        pytest.param(RandomForestClassifier, id="RandomForestClassifier"),
-        pytest.param(LogisticRegression, id="LogisticRegression"),
-    ],
-)
-def test_serialize_model(tmpdir: LocalPath, clf: SklearnClassifierModel):
-    expected_output = tmpdir.join("model.pkl")
-    model = clf()
-    real_output = serialize_model(model, expected_output)
-    assert real_output == expected_output
-    assert os.path.exists
-    with open(real_output, "rb") as f:
-        model = pickle.load(f)
-    assert isinstance(model, clf)
+def test_serialize_model(tmpdir: LocalPath, config_test_fixture):
+    for clf in config_test_fixture.model_types:
+        clf = create_object_by_type(clf)
+        expected_output = tmpdir.join("model.pkl")
+        model = clf()
+        real_output = serialize_model(model, expected_output)
+        assert real_output == expected_output
+        assert os.path.exists
+        with open(real_output, "rb") as f:
+            model = pickle.load(f)
+        assert isinstance(model, clf)

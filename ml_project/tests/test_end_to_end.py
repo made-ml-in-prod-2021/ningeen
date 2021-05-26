@@ -11,14 +11,18 @@ from src.entities import (
     FeatureParams,
     TrainingParams,
 )
+from conftest import config_test
+
+
+def get_e2e_params():
+    for i in range(len(config_test.model_types)):
+        model_type = config_test.model_types[i]
+        yield pytest.param(model_type, id=model_type)
 
 
 @pytest.mark.parametrize(
     "model_type",
-    [
-        pytest.param("RandomForestClassifier", id="RandomForestClassifier"),
-        pytest.param("LogisticRegression", id="LogisticRegression"),
-    ],
+    get_e2e_params(),
 )
 def test_train_e2e(
     tmpdir: LocalPath,
@@ -29,6 +33,8 @@ def test_train_e2e(
     features_to_drop: List[str],
     model_type: str,
 ):
+    categorical_features = list(set(categorical_features) - set(numerical_features))
+    features_to_drop = list(set(features_to_drop) - set(numerical_features))
     expected_output_model_path = tmpdir.join("model.pkl")
     expected_metric_path = tmpdir.join("metrics.json")
     expected_transformer_path = tmpdir.join("transformer.pkl")
@@ -37,7 +43,10 @@ def test_train_e2e(
         output_model_path=expected_output_model_path,
         metric_path=expected_metric_path,
         transformer_path=expected_transformer_path,
-        splitting_params=SplittingParams(val_size=0.2, random_state=239),
+        splitting_params=SplittingParams(
+            val_size=config_test.splitting_val_size,
+            random_state=config_test.splitting_random_state,
+        ),
         feature_params=FeatureParams(
             numerical_features=numerical_features,
             categorical_features=categorical_features,
@@ -47,6 +56,6 @@ def test_train_e2e(
         train_params=TrainingParams(model_type=model_type),
     )
     real_model_path, metrics = train_pipeline(params)
-    assert metrics["accuracy"] >= 0.5
+    assert metrics["accuracy"] >= config_test.min_accuracy
     assert os.path.exists(real_model_path)
     assert os.path.exists(params.metric_path)

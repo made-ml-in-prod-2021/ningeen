@@ -7,11 +7,10 @@ def test_load_dataset(fake_dataset, dataset_size):
     assert len(data) == dataset_size
 
 
-def test_split_dataset(fake_dataset, dataset_size):
-    val_size = 0.2
+def test_split_dataset(fake_dataset, dataset_size, config_test_fixture):
     splitting_params = SplittingParams(
-        random_state=239,
-        val_size=val_size,
+        random_state=config_test_fixture.splitting_random_state,
+        val_size=config_test_fixture.splitting_val_size,
     )
     data = read_data(fake_dataset)
     train, val = split_train_val_data(data, splitting_params)

@@ -1,112 +1,111 @@
 import os
 import random
 
+import numpy as np
 import pandas as pd
 import pytest
 from faker import Faker
-from typing import List
+from typing import List, Dict, Tuple, DefaultDict, Union
+from dataclasses import dataclass, field
+from marshmallow_dataclass import class_schema
+import yaml
 
-DATASET_SIZE = 100
-PROBA = 0.05
+
+@dataclass()
+class TestConfig:
+    test_fname: str
+    target_col: str
+    threshold_col: str
+    splitting_val_size: float
+    min_accuracy: float
+    splitting_random_state: int
+    target_threshold: int
+    categorical_features_size: int
+    numerical_features_size: int
+    features_to_drop_size: int
+    column_names: List[str]
+    possible_cat_feat: List[str]
+    limits: Dict[str, List[int]]
+    rank_params: Dict[str, List[Union[str, bool]]]
+    model_types: List[str]
+    dataset_size: int = field(default=100)
+    proba: float = field(default=0.05)
 
 
-@pytest.fixture
+TEST_CONFIG_PATH = "./configs/test_config.yaml"
+TestSchema = class_schema(TestConfig)
+
+
+def load_test(test_path=TEST_CONFIG_PATH):
+    with open(test_path) as file:
+        config_test = yaml.safe_load(file)
+        schema = TestSchema()
+        return schema.load(config_test)
+
+
+config_test = load_test()
+
+
+@pytest.fixture(scope="session")
+def config_test_fixture():
+    return config_test
+
+
+@pytest.fixture(scope="session")
 def dataset_size():
-    return DATASET_SIZE
+    return config_test.dataset_size
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def target_col():
-    return "target"
+    return config_test.target_col
 
 
 @pytest.fixture
 def categorical_features() -> List[str]:
-    return ["sex"]
+    return np.random.choice(
+        config_test.possible_cat_feat,
+        size=config_test.categorical_features_size,
+        replace=False,
+    ).tolist()
 
 
 @pytest.fixture
 def numerical_features() -> List[str]:
-    return ["age"]
+    return np.random.choice(
+        config_test.column_names,
+        size=config_test.numerical_features_size,
+        replace=False,
+    ).tolist()
 
 
 @pytest.fixture
 def features_to_drop() -> List[str]:
-    return [
-        "thal",
-        "slope",
-        "fbs",
-        "cp",
-        "chol",
-        "oldpeak",
-        "trestbps",
-        "thalach",
-        "restecg",
-        "ca",
-        "exang",
-    ]
+    return np.random.choice(
+        config_test.column_names,
+        size=config_test.features_to_drop_size,
+        replace=False,
+    ).tolist()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def fake_dataset(tmpdir):
-    dataset_path = os.path.join(tmpdir, "test_dataset.csv")
+    dataset_path = os.path.join(tmpdir, config_test.test_fname)
     faker = Faker()
-    dataset = pd.DataFrame(
-        {
-            "age": [
-                faker.pyint(20, 80) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "sex": [
-                faker.pyint(0, 1) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "cp": [
-                faker.pyint(0, 3) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "trestbps": [
-                faker.pyint(90, 200) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "chol": [
-                faker.pyint(120, 570) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "fbs": [
-                faker.pyint(0, 1) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "restecg": [
-                faker.pyint(0, 2) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "thalach": [
-                faker.pyint(70, 210) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "exang": [
-                faker.pyint(0, 1) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "oldpeak": [
-                faker.pyfloat(0, 7) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "slope": [
-                faker.pyint(0, 2) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "ca": [
-                faker.pyint(0, 4) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-            "thal": [
-                faker.pyint(0, 3) if random.random() > PROBA else None
-                for _ in range(DATASET_SIZE)
-            ],
-        }
-    )
-    dataset["target"] = (dataset["age"] > 50).astype(int)
+
+    dataset = {}
+    for col in config_test.column_names:
+        items = []
+        for _ in range(config_test.dataset_size):
+            value = None
+            if random.random() > config_test.proba:
+                value = faker.pyint(*config_test.limits[col])
+            items.append(value)
+        dataset[col] = items
+
+    dataset = pd.DataFrame(dataset)
+    dataset["target"] = (
+        dataset[config_test.threshold_col] > config_test.target_threshold
+    ).astype(int)
     dataset.to_csv(dataset_path, index=False)
     return dataset_path
