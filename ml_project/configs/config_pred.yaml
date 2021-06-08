@@ -1,0 +1,9 @@
+data_path: "../../data/raw/heart.csv"
+artifacts_dir: "train_1.0"
+transformer_path: "../${artifacts_dir}/transformer.pkl"
+model_path: "../${artifacts_dir}/model.pkl"
+output_path: "prediction.csv"
+hydra:
+  verbose: True
+  run:
+    dir: ./outputs/${artifacts_dir}_pred

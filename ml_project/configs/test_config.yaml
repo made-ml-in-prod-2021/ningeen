@@ -1,0 +1,86 @@
+column_names:
+  - "age"
+  - "sex"
+  - "cp"
+  - "trestbps"
+  - "chol"
+  - "fbs"
+  - "restecg"
+  - "thalach"
+  - "exang"
+  - "oldpeak"
+  - "slope"
+  - "ca"
+  - "thal"
+possible_cat_feat:
+  - "thal"
+  - "cp"
+  - "ca"
+dataset_size: 100
+proba: 0.05
+target_col: "target"
+test_fname: "test_dataset.csv"
+target_threshold: 50
+threshold_col: "age"
+categorical_features_size: 1
+numerical_features_size: 9
+features_to_drop_size: 3
+limits:
+  "age":
+    - 20
+    - 80
+  "sex":
+    - 0
+    - 1
+  "cp":
+    - 0
+    - 3
+  "trestbps":
+    - 90
+    - 200
+  "chol":
+    - 120
+    - 570
+  "fbs":
+    - 0
+    - 1
+  "restecg":
+    - 0
+    - 2
+  "thalach":
+    - 70
+    - 210
+  "exang":
+    - 0
+    - 1
+  "oldpeak":
+    - 0
+    - 7
+  "slope":
+    - 0
+    - 2
+  "ca":
+    - 0
+    - 4
+  "thal":
+    - 0
+    - 3
+model_types:
+  - "RandomForestClassifier"
+  - "LogisticRegression"
+splitting_val_size: 0.2
+splitting_random_state: 249
+min_accuracy: 0.2
+rank_params:
+  "average_true":
+    - "average"
+    - True
+  "average_false":
+    - "average"
+    - False
+  "min":
+    - "min"
+    - True
+  "first":
+    - "first"
+    - True

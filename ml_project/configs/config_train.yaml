@@ -1,0 +1,14 @@
+version: "1.0"
+input_data_path: "../../data/raw/heart.csv"
+input_data_url: "https://raw.githubusercontent.com/made-ml-in-prod-2021/sergey-msu/main/ml_project/data/raw/heart.csv"
+output_model_path: "model.pkl"
+metric_path: "metrics.json"
+transformer_path: "transformer.pkl"
+defaults:
+  - splitting_params: split_0.20
+  - train_params: clf_rf
+  - feature_params: 1.0_fp
+hydra:
+  verbose: True
+  run:
+    dir: ./outputs/train_${version}

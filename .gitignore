@@ -1,0 +1,7 @@
+*.idea
+*.ipynb_checkpoints/
+*__pycache__/
+ml_project/models/*
+ml_project/outputs/*
+*egg-info*
+*.hydra
