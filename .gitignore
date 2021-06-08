@@ -5,3 +5,4 @@ ml_project/models/*
 ml_project/outputs/*
 *egg-info*
 *.hydra
+*.csv

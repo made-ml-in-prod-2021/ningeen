@@ -1,0 +1,10 @@
+scaler: MinMaxScaler
+cols_to_drop:
+  - "restecg"
+  - "thalach"
+cols_to_scale:
+  - "chol"
+  - "fbs"
+  - "slope"
+  - "ca"
+  - "thal"
