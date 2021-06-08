@@ -1,0 +1,2 @@
+transformer_path: "./models/transformer.pkl"
+model_path: "./models/model.pkl"

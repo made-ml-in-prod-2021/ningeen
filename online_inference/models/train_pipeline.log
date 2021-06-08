@@ -1,0 +1,44 @@
+[2021-05-04 17:31:20,553][__main__][INFO] - Config params:
+[2021-05-04 17:31:20,553][__main__][INFO] - version: '1.0'
+input_data_path: ../../data/raw/heart.csv
+output_model_path: model.pkl
+metric_path: metrics.json
+transformer_path: transformer.pkl
+splitting_params:
+  val_size: 0.2
+  random_state: 2
+train_params:
+  model_type: RandomForestClassifier
+  clf_params:
+    random_state: 42
+    n_estimators: 50
+feature_params:
+  categorical_features:
+  - cp
+  - fbs
+  - restecg
+  - exang
+  - slope
+  - thal
+  - ca
+  numerical_features:
+  - age
+  - trestbps
+  - thalach
+  - oldpeak
+  - chol
+  rank_features:
+  - sex
+  target_col: target
+
+[2021-05-04 17:31:20,557][__main__][INFO] - Start training with params: TrainingPipelineParams(version='1.0', input_data_path='../../data/raw/heart.csv', output_model_path='model.pkl', metric_path='metrics.json', transformer_path='transformer.pkl', splitting_params=SplittingParams(val_size=0.2, random_state=2), feature_params=FeatureParams(target_col='target', categorical_features=['cp', 'fbs', 'restecg', 'exang', 'slope', 'thal', 'ca'], numerical_features=['age', 'trestbps', 'thalach', 'oldpeak', 'chol'], rank_features=['sex'], features_to_drop=[], method='average', ascending=True, normalize=False), train_params=TrainingParams(model_type='RandomForestClassifier', clf_params={'random_state': 42, 'n_estimators': 50}))
+[2021-05-04 17:31:20,560][__main__][INFO] - Raw data shape: (303, 14)
+[2021-05-04 17:31:20,561][__main__][INFO] - Train df shape: (242, 14)
+[2021-05-04 17:31:20,561][__main__][INFO] - Val df shape: (61, 14)
+[2021-05-04 17:31:20,574][__main__][INFO] - Transform fitted.
+[2021-05-04 17:31:20,580][__main__][INFO] - Train features shape: (242, 29)
+[2021-05-04 17:31:20,587][__main__][INFO] - Val features shape: (242, 29)
+[2021-05-04 17:31:20,640][__main__][INFO] - Model trained.
+[2021-05-04 17:31:20,647][__main__][INFO] - Metrics are {'f1_score': 0.9206349206349206, 'accuracy': 0.9180327868852459}
+[2021-05-04 17:31:20,648][__main__][INFO] - Model saved in model.pkl
+[2021-05-04 17:31:20,649][__main__][INFO] - Transformer saved in transformer.pkl
