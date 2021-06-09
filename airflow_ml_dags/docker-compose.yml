@@ -32,7 +32,13 @@ services:
       - postgres
     environment: *airflow_environment
     entrypoint: /bin/bash
-    command: -c 'airflow db init && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
+    command: >-
+      -c 'airflow db init
+      && airflow users create
+      --username admin --password admin
+      --firstname Anonymous --lastname Admin
+      --role Admin --email admin@example.org
+      && airflow connections add fs_default --conn-type fs'
 
   webserver:
     build:
@@ -65,6 +71,7 @@ services:
       - logs:/opt/airflow/logs
       - ./dags/:/opt/airflow/dags/
       - ./data/:/opt/airflow/data/
+      - ./models/:/opt/airflow/models/
       - /var/run/docker.sock:/var/run/docker.sock
     environment: *airflow_environment
     command: scheduler
