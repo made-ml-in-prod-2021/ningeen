@@ -24,15 +24,11 @@ x-airflow-image: &airflow_image apache/airflow:2.0.0-python3.6
 # ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 services:
   postgres:
-    build:
-      context: images/airflow-postgres
-    image: airflow-postgres
+    image: postgres:12-alpine
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
-      - POSTGRES_MULTIPLE_DATABASES=airflow,mlflow
-    networks:
-      - airflow-net
+      - POSTGRES_DB=airflow
     ports:
       - "5432:5432"
   init:
@@ -41,8 +37,6 @@ services:
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
     image: airflow-docker
-    networks:
-      - airflow-net
     depends_on:
       - postgres
     environment: *airflow_environment
@@ -65,8 +59,6 @@ services:
     restart: always
     depends_on:
       - postgres
-    networks:
-      - airflow-net
     ports:
       - "8080:8080"
     volumes:
@@ -80,8 +72,7 @@ services:
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
     image: airflow-docker
-    networks:
-      - airflow-net
+
     restart: always
     depends_on:
       - postgres
@@ -130,34 +121,5 @@ services:
     image: airflow-trainer
     restart: "no"
 
-  mlflow:
-    build:
-      context: images/airflow-mlflow
-    image:
-      airflow-mlflow
-    networks:
-      - airflow-net
-    restart: always
-    depends_on:
-      - postgres
-    ports:
-      - "5000:5000"
-    volumes:
-      - mlrun_data:/mlruns
-    command:
-      - sh  # enable var  substitution
-      - -c
-      - mlflow server
-          --host 0.0.0.0
-          --port 5000
-          --backend-store-uri postgresql://airflow:airflow@postgres:5432/mlflow
-          --default-artifact-root /mlruns
-
 volumes:
   logs:
-  mlrun_data:
-    name: mlrun_data
-
-networks:
-  airflow-net:
-    name: airflow-net
