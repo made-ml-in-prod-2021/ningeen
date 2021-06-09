@@ -9,6 +9,7 @@ x-environment: &airflow_environment
   - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
   - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
+  - VOLUME_PATH=/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags
 
 
 x-airflow-image: &airflow_image apache/airflow:2.0.0-python3.6

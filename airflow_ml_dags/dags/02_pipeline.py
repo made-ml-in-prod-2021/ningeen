@@ -1,7 +1,13 @@
+import os
+
 import airflow
 from airflow import DAG
+from airflow.operators.bash import BashOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sensors.filesystem import FileSensor
+
+volume_data = f"{os.environ['VOLUME_PATH']}/data:/data"
+volume_models = f"{os.environ['VOLUME_PATH']}/models:/models"
 
 with DAG(
     dag_id="02_pipeline",
@@ -11,14 +17,16 @@ with DAG(
 
     wait_raw_data = FileSensor(
         task_id="wait_raw_data",
-        filepath="/opt/airflow/data/raw/{{ ds }}/data.csv",
+        filepath=os.environ['PWD'] + "/data/raw/{{ ds }}/data.csv",
         poke_interval=30,
+        retries=100,
     )
 
     wait_raw_target = FileSensor(
         task_id="wait_raw_target",
-        filepath="/opt/airflow/data/raw/{{ ds }}/target.csv",
+        filepath=os.environ['PWD'] + "/data/raw/{{ ds }}/target.csv",
         poke_interval=30,
+        retries=100,
     )
 
     preprocessor = DockerOperator(
@@ -27,7 +35,7 @@ with DAG(
         network_mode="bridge",
         task_id="docker-airflow-preprocessor",
         do_xcom_push=False,
-        volumes=["/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data"],
+        volumes=[volume_data],
     )
 
     splitter = DockerOperator(
@@ -36,7 +44,7 @@ with DAG(
         network_mode="bridge",
         task_id="docker-airflow-splitter",
         do_xcom_push=False,
-        volumes=["/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data"],
+        volumes=[volume_data],
     )
 
     trainer = DockerOperator(
@@ -45,10 +53,7 @@ with DAG(
         network_mode="bridge",
         task_id="docker-airflow-trainer",
         do_xcom_push=False,
-        volumes=[
-            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
-            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/models:/models",
-        ],
+        volumes=[volume_data, volume_models],
     )
 
     predict = DockerOperator(
@@ -57,10 +62,7 @@ with DAG(
         network_mode="bridge",
         task_id="docker-airflow-predict",
         do_xcom_push=False,
-        volumes=[
-            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
-            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/models:/models",
-        ],
+        volumes=[volume_data, volume_models],
     )
 
     scorer = DockerOperator(
@@ -69,9 +71,7 @@ with DAG(
         network_mode="bridge",
         task_id="docker-airflow-scorer",
         do_xcom_push=False,
-        volumes=[
-            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
-        ],
+        volumes=[volume_data],
     )
 
     [wait_raw_data, wait_raw_target] >> preprocessor >> splitter >> trainer >> predict >> scorer
