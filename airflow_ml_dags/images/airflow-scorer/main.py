@@ -1,4 +1,6 @@
 import pickle
+import json
+import os
 
 import click
 import pandas as pd
@@ -28,6 +30,17 @@ def load_model(path: str) -> Classifier:
     return obj
 
 
+def get_score_path(path_from: str) -> str:
+    path_from, file_name = os.path.split(path_from)
+    path_to = os.path.join(path_from, "score.json")
+    return path_to
+
+
+def save_score(path: str, obj: dict):
+    with open(path, 'w') as f:
+        json.dump(obj, f)
+
+
 @click.command("run_train")
 @click.argument("model_path")
 @click.argument("dataset_in_path")
@@ -37,7 +50,8 @@ def run_train(model_path: str, dataset_in_path: str, target_in_path: str):
     df, target = read_data(dataset_in_path, target_in_path)
     clf = load_model(model_path)
     score = score_model(df, target, clf, cfg)
-    print(score)
+    score_path = get_score_path(dataset_in_path)
+    save_score(score_path, score)
 
 
 if __name__ == "__main__":
