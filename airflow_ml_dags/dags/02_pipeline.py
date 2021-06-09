@@ -51,11 +51,11 @@ with DAG(
         ],
     )
 
-    scorer = DockerOperator(
-        image="airflow-scorer",
-        command="/models/{{ ds }}/clf.pkl /data/splitted/{{ ds }}/data_test.csv /data/splitted/{{ ds }}/target_test.csv",
+    predict = DockerOperator(
+        image="airflow-predict",
+        command="/models/{{ ds }}/clf.pkl /data/splitted/{{ ds }}/data_test.csv /data/predictions/{{ ds }}/prediction.csv",
         network_mode="bridge",
-        task_id="docker-airflow-scorer",
+        task_id="docker-airflow-predict",
         do_xcom_push=False,
         volumes=[
             "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
@@ -63,4 +63,15 @@ with DAG(
         ],
     )
 
-    [wait_raw_data, wait_raw_target] >> preprocessor >> splitter >> trainer >> scorer
+    scorer = DockerOperator(
+        image="airflow-scorer",
+        command="/data/splitted/{{ ds }}/target_test.csv /data/predictions/{{ ds }}/prediction.csv",
+        network_mode="bridge",
+        task_id="docker-airflow-scorer",
+        do_xcom_push=False,
+        volumes=[
+            "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
+        ],
+    )
+
+    [wait_raw_data, wait_raw_target] >> preprocessor >> splitter >> trainer >> predict >> scorer

@@ -32,11 +32,11 @@ with DAG(
         volumes=["/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data"],
     )
 
-    scorer = DockerOperator(
-        image="airflow-scorer",
-        command="{{ var.value.PROD_MODEL }} /data/processed/{{ ds }}/data.csv /data/processed/{{ ds }}/target.csv",
+    predict = DockerOperator(
+        image="airflow-predict",
+        command="/models/{{ ds }}/clf.pkl /data/splitted/{{ ds }}/data_test.csv /data/predictions/{{ ds }}/prediction.csv",
         network_mode="bridge",
-        task_id="docker-airflow-scorer",
+        task_id="docker-airflow-predict",
         do_xcom_push=False,
         volumes=[
             "/home/ningeen/Documents/repos/ml_in_prod/airflow_ml_dags/data:/data",
@@ -44,4 +44,4 @@ with DAG(
         ],
     )
 
-    [wait_raw_data, wait_raw_target] >> preprocessor >> scorer
+    [wait_raw_data, wait_raw_target] >> preprocessor >> predict

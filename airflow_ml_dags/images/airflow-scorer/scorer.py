@@ -11,15 +11,14 @@ Scorer = Union[roc_auc_score, accuracy_score, f1_score]
 Classifier = Union[LogisticRegression, RandomForestClassifier]
 
 
-def calc_metric(X: pd.DataFrame, y: pd.Series, clf: Classifier, scorer: Scorer, threshold=None) -> float:
-    y_pred = clf.predict_proba(X)[:, 1]
+def calc_metric(y_true: pd.Series, y_pred: pd.Series, scorer: Scorer, threshold=None) -> float:
     if threshold is not None:
         y_pred = (y_pred > threshold).astype(int)
-    score = scorer(y, y_pred)
+    score = scorer(y_true, y_pred)
     return score
 
 
-def score_model(X: pd.DataFrame, y: pd.Series, clf: Classifier, cfg: ScorerParams) -> dict:
+def score_model(y_true: pd.Series, y_pred: pd.Series, cfg: ScorerParams) -> dict:
     scorer = globals()[cfg.scorer]
-    score = calc_metric(X, y , clf, scorer, cfg.threshold)
+    score = calc_metric(y_true, y_pred, scorer, cfg.threshold)
     return {cfg.scorer: score}

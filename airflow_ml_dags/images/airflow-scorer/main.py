@@ -18,10 +18,10 @@ def load_scorer_config() -> ScorerParams:
     return scorer_config
 
 
-def read_data(dataset_path: str, target_path: str) -> (pd.DataFrame, pd.Series):
-    df = pd.read_csv(dataset_path)
+def read_data(target_path: str, prediction_path: str) -> (pd.Series, pd.Series):
     target = pd.read_csv(target_path)
-    return df, target
+    prediction = pd.read_csv(prediction_path)
+    return target, prediction
 
 
 def load_model(path: str) -> Classifier:
@@ -41,18 +41,16 @@ def save_score(path: str, obj: dict):
         json.dump(obj, f)
 
 
-@click.command("run_train")
-@click.argument("model_path")
-@click.argument("dataset_in_path")
-@click.argument("target_in_path")
-def run_train(model_path: str, dataset_in_path: str, target_in_path: str):
+@click.command("run_scoring")
+@click.argument("target_path")
+@click.argument("prediction_path")
+def run_scoring(target_path: str, prediction_path: str):
     cfg = load_scorer_config()
-    df, target = read_data(dataset_in_path, target_in_path)
-    clf = load_model(model_path)
-    score = score_model(df, target, clf, cfg)
-    score_path = get_score_path(dataset_in_path)
+    y_true, y_pred = read_data(target_path, prediction_path)
+    score = score_model(y_true, y_pred, cfg)
+    score_path = get_score_path(prediction_path)
     save_score(score_path, score)
 
 
 if __name__ == "__main__":
-    run_train()
+    run_scoring()
