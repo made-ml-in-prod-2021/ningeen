@@ -9,6 +9,7 @@ class PreprocessParams:
     scaler: str
     cols_to_drop: List[str]
     cols_to_scale: List[str]
+    nan_value: float
 
 
 def read_preprocess_params(cfg: DictConfig) -> PreprocessParams:

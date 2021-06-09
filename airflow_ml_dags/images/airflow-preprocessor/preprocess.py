@@ -16,8 +16,14 @@ def scale_columns(
     return df
 
 
+def fill_nan(df: pd.DataFrame, fill_value: float):
+    df = df.fillna(fill_value)
+    return df
+
+
 def preprocess_data(df: pd.DataFrame, cfg: PreprocessParams):
     df = drop_columns(df, cfg.cols_to_drop)
+    df = fill_nan(df, cfg.nan_value)
     scaler = globals()[cfg.scaler]()
     df = scale_columns(df, cfg.cols_to_scale, scaler)
     return df

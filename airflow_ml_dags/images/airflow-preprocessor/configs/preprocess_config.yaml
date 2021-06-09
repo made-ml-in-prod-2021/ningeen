@@ -8,3 +8,4 @@ cols_to_scale:
   - "slope"
   - "ca"
   - "thal"
+nan_value: 0.0
