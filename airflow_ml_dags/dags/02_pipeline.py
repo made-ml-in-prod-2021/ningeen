@@ -1,18 +1,24 @@
 import os
 
 import airflow
+from airflow.models import Variable
 from airflow import DAG
-from airflow.operators.bash import BashOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.sensors.filesystem import FileSensor
 
 volume_data = f"{os.environ['VOLUME_PATH']}/data:/data"
 volume_models = f"{os.environ['VOLUME_PATH']}/models:/models"
+default_args = {
+    'owner': 'ningeen',
+    'start_date': airflow.utils.dates.days_ago(7),
+    'email': [Variable.get("gmail_user")],
+    'email_on_failure': True,
+}
 
 with DAG(
     dag_id="02_pipeline",
     schedule_interval="@weekly",
-    start_date=airflow.utils.dates.days_ago(7),
+    default_args=default_args,
 ) as dag:
 
     wait_raw_data = FileSensor(
