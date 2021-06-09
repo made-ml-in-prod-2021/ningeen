@@ -75,5 +75,29 @@ services:
     image: airflow-generator
     restart: "no"
 
+  preprocessor:
+    build:
+      context: images/airflow-preprocessor
+    image: airflow-preprocessor
+    restart: "no"
+
+  scorer:
+    build:
+      context: images/airflow-scorer
+    image: airflow-scorer
+    restart: "no"
+
+  splitter:
+    build:
+      context: images/airflow-splitter
+    image: airflow-splitter
+    restart: "no"
+
+  trainer:
+    build:
+      context: images/airflow-trainer
+    image: airflow-trainer
+    restart: "no"
+
 volumes:
   logs:

@@ -46,15 +46,15 @@ def save_model(path: str, obj: Classifier):
 
 
 @click.command("run_train")
+@click.argument("model_path")
 @click.argument("dataset_in_path")
 @click.argument("target_in_path")
-def run_train(dataset_in_path: str, target_in_path: str):
+def run_train(model_path:str, dataset_in_path: str, target_in_path: str):
     cfg = load_trainer_config()
     df, target = read_data(dataset_in_path, target_in_path)
     clf = train_model(df, target, cfg)
-    path_to = get_out_path(dataset_in_path, cfg.model_file_name)
-    create_dir_if_not_exists(path_to)
-    save_model(path_to, clf)
+    create_dir_if_not_exists(model_path)
+    save_model(model_path, clf)
 
 
 if __name__ == "__main__":

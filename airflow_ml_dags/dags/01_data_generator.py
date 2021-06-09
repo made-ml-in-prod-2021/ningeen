@@ -5,7 +5,7 @@ from airflow.providers.docker.operators.docker import DockerOperator
 with DAG(
     dag_id="01_data_generator",
     schedule_interval="@hourly",
-    start_date=airflow.utils.dates.days_ago(3),
+    start_date=airflow.utils.dates.days_ago(0, hour=3),
 ) as dag:
     get_data = DockerOperator(
         image="airflow-generator",
