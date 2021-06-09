@@ -1,62 +1,25 @@
+from typing import Union
+
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
-from entities.trainer_params import read_data_params, PipelineParams
-from omegaconf import OmegaConf
-import os
-import click
-from preprocess import preprocess_data
+from entities.trainer_params import TrainerParams
 
-TRAINER_CONFIG_PATH = "./configs/trainer_config.yaml"
+Classifier = Union[LogisticRegression, RandomForestClassifier]
 
 
-def load_pipeline_config() -> PipelineParams:
-    omega_data_config = OmegaConf.load(TRAINER_CONFIG_PATH)
-    data_config = read_data_params(omega_data_config)
-    return data_config
+def train_model(X: pd.DataFrame, y: pd.Series, cfg: TrainerParams) -> Classifier:
+    clf = globals()[cfg.clf](**cfg.clf_params)
+    clf.fit(X.values, y.values.ravel())
+    return clf
 
 
-def read_data(dataset_path: str, target_path: str) -> (pd.DataFrame, pd.Series):
-    df = pd.read_csv(dataset_path)
-    target = pd.read_csv(target_path)
-    return df, target
-
-
-def get_out_path(path_from: str) -> str:
-    basename = os.path.basename(path_from)
-    dir_path = os.path.dirname(os.path.dirname(path_from))
-    path_to = os.path.join(dir_path, "processed", basename)
-    return path_to
-
-
-def save_preprocessed(df: pd.DataFrame, target: pd.Series, dataset_in_path: str, target_in_path: str) -> None:
-    dataset_out_path = get_out_path(dataset_in_path)
-    target_out_path = get_out_path(target_in_path)
-
-    df.to_csv(dataset_out_path, index=False)
-    target.to_csv(target_out_path, index=False)
-
-
-@click.command("download")
-@click.argument("dataset_in_path")
-@click.argument("target_in_path")
-def run_pipeline(dataset_in_path: str, target_in_path: str):
-    pipeline_config = load_pipeline_config()
-    df, target = read_data(dataset_in_path, target_in_path)
-    df = preprocess_data(df, pipeline_config)
-
-    dataset_out_path = get_out_path(dataset_in_path)
-    target_out_path = get_out_path(target_in_path)
-
-    df.to_csv(dataset_out_path, index=False)
-    target.to_csv(target_out_path, index=False)
-
-
-@click.command("download")
-@click.argument("dataset_path")
-@click.argument("target_path")
-def load_new_data(dataset_path: str, target_path: str) -> None:
-    data_config = load_data_config()
-    dataset, target = get_new_data(data_config)
-    create_dir_if_not_exists(dataset_path)
-    dataset.to_csv(dataset_path, index=False)
-    target.to_csv(target_path, index=False)
+# from sklearn.metrics import roc_auc_score, accuracy_score, f1_score
+# Scorer = Union[roc_auc_score, accuracy_score, f1_score]
+# def calc_metric(X: pd.DataFrame, y: pd.Series,  clf: Classifier, scorer: Scorer, threshold=None) -> float:
+#     y_pred = clf.predict_proba(X)
+#     if threshold is not None:
+#         y_pred = (y_pred > threshold).astype(int)
+#     score = scorer(y, y_pred)
+#     return score
