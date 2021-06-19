@@ -1,0 +1,5 @@
+clf: "RandomForestClassifier"
+clf_params:
+  n_estimators: 50
+  random_state: 42
+model_file_name: "clf.pkl"

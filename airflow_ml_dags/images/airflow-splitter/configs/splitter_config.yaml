@@ -1,0 +1,4 @@
+shuffle: True
+to_stratify: True
+test_size: 0.2
+random_state: 0
