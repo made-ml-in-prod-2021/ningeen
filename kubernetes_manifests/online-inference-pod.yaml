@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: online-inference
+spec:
+  containers:
+    - name: inference
+      image: ningeen/online_inference:v1
+      ports:
+        - name: api
+          containerPort: 8080
+          protocol: TCP
